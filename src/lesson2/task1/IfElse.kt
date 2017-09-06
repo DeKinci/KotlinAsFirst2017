@@ -116,16 +116,16 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     var longestSide = max(max(a, b), c)
-    var side1 = min(max(a, b), c)
-    var side2 = min(min(a, b), c)
+    var shortestSide = min(min(a, b), c)
+    var middleSide = a + b + c - longestSide - shortestSide //kostyil'
 
-    if (longestSide > side1 + side2)
+    if (longestSide > middleSide + shortestSide)
         return -1
-    if (longestSide*longestSide > side1*side1 + side2*side2)
+    if (longestSide*longestSide > middleSide*middleSide + shortestSide*shortestSide)
         return 2
-    if (longestSide*longestSide < side1*side1 + side2*side2)
+    if (longestSide*longestSide < middleSide*middleSide + shortestSide*shortestSide)
         return 0
-    if (longestSide*longestSide == side1*side1 + side2*side2)
+    if (longestSide*longestSide == middleSide*middleSide + shortestSide*shortestSide)
         return 1
     return -1
 }
