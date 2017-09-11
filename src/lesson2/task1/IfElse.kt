@@ -1,4 +1,5 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson2.task1
 
 import lesson1.task1.discriminant
@@ -35,9 +36,9 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String = when {
-    age % 10 >= 5 || age % 10 == 0 || age % 100 in 11 .. 19  -> "$age лет"
-    age % 10 == 1                                               -> "$age год"
-    else                                                        -> "$age года"
+    age % 10 >= 5 || age % 10 == 0 || age % 100 in 11..19 -> "$age лет"
+    age % 10 == 1 -> "$age год"
+    else -> "$age года"
 }
 
 /**
@@ -50,23 +51,21 @@ fun ageDescription(age: Int): String = when {
 fun timeForHalfWay(t1: Double, v1: Double,
                    t2: Double, v2: Double,
                    t3: Double, v3: Double): Double {
-    var halfWay = (t1*v1 + t2*v2 + t3*v3)/2
+    var halfWay = (t1 * v1 + t2 * v2 + t3 * v3) / 2
     var time = .0
-    if (t1*v1 < halfWay) {
-        halfWay -= t1*v1
+    if (t1 * v1 < halfWay) {
+        halfWay -= t1 * v1
         time += t1
-    }
-    else
-        return halfWay/v1
+    } else
+        return halfWay / v1
 
-    if (t2*v2 < halfWay) {
-        halfWay -= t2*v2
+    if (t2 * v2 < halfWay) {
+        halfWay -= t2 * v2
         time += t2
-    }
-    else
-        return time + halfWay/v2
+    } else
+        return time + halfWay / v2
 
-    return time + halfWay/v3
+    return time + halfWay / v3
 }
 
 /**
@@ -82,9 +81,9 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
                        rookX2: Int, rookY2: Int): Int = when {
     (kingX == rookX2 || kingY == rookY2) && (kingX == rookX1 || kingY == rookY1) -> 3
-    kingX == rookX2 || kingY == rookY2                                           -> 2
-    kingX == rookX1 || kingY == rookY1                                           -> 1
-    else                                                                         -> 0
+    kingX == rookX2 || kingY == rookY2 -> 2
+    kingX == rookX1 || kingY == rookY1 -> 1
+    else -> 0
 }
 
 /**
@@ -100,10 +99,10 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
                           bishopX: Int, bishopY: Int): Int = when {
-    abs(kingX - bishopX) == abs(kingY - bishopY) && (kingX == rookX || kingY == rookY)  -> 3
-    abs(kingX - bishopX) == abs(kingY - bishopY)                                        -> 2
-    kingX == rookX || kingY == rookY                                                    -> 1
-    else                                                                                -> 0
+    abs(kingX - bishopX) == abs(kingY - bishopY) && (kingX == rookX || kingY == rookY) -> 3
+    abs(kingX - bishopX) == abs(kingY - bishopY) -> 2
+    kingX == rookX || kingY == rookY -> 1
+    else -> 0
 }
 
 /**
@@ -121,11 +120,11 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
 
     if (longestSide > middleSide + shortestSide)
         return -1
-    if (longestSide*longestSide > middleSide*middleSide + shortestSide*shortestSide)
+    if (longestSide * longestSide > middleSide * middleSide + shortestSide * shortestSide)
         return 2
-    if (longestSide*longestSide < middleSide*middleSide + shortestSide*shortestSide)
+    if (longestSide * longestSide < middleSide * middleSide + shortestSide * shortestSide)
         return 0
-    if (longestSide*longestSide == middleSide*middleSide + shortestSide*shortestSide)
+    if (longestSide * longestSide == middleSide * middleSide + shortestSide * shortestSide)
         return 1
     return -1
 }
@@ -143,4 +142,4 @@ fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
         return -1
 
     return abs(max(a, c) - min(b, d))
- }
+}
