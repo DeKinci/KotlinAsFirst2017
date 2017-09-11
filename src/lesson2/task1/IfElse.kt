@@ -36,7 +36,7 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String = when {
-    age % 10 >= 5 || age % 10 == 0 || age % 100 in 11..19 -> "$age лет"
+    age % 10 >= 5 || age % 10 == 0 || age % 100 in 11 .. 19 -> "$age лет"
     age % 10 == 1 -> "$age год"
     else -> "$age года"
 }
@@ -114,19 +114,17 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    var longestSide = max(max(a, b), c)
-    var shortestSide = min(min(a, b), c)
-    var middleSide = a + b + c - longestSide - shortestSide //kostyil'
+    val longestSide = max(max(a, b), c)
+    val shortestSide = min(min(a, b), c)
+    val middleSide = a + b + c - longestSide - shortestSide
 
-    if (longestSide > middleSide + shortestSide)
-        return -1
-    if (longestSide * longestSide > middleSide * middleSide + shortestSide * shortestSide)
-        return 2
-    if (longestSide * longestSide < middleSide * middleSide + shortestSide * shortestSide)
-        return 0
-    if (longestSide * longestSide == middleSide * middleSide + shortestSide * shortestSide)
-        return 1
-    return -1
+    return when {
+        longestSide > middleSide + shortestSide -> -1
+        longestSide * longestSide > middleSide * middleSide + shortestSide * shortestSide -> 2
+        longestSide * longestSide < middleSide * middleSide + shortestSide * shortestSide -> 0
+        longestSide * longestSide == middleSide * middleSide + shortestSide * shortestSide -> 1
+        else -> -1
+    }
 }
 
 /**
