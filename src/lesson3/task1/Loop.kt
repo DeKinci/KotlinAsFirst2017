@@ -280,7 +280,6 @@ fun hasDifferentDigits(n: Int): Boolean {
  */
 fun squareSequenceDigit(n: Int): Int {
     var str = StringBuilder("")
-
     for (i in 1 .. n) {
         str.append((i * i).toString())
     }
