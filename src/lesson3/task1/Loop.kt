@@ -68,7 +68,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  */
 fun digitNumber(n: Int): Int {
     var modifier = 0
-    if (n == 0)
+    if (n == 0 || n == 1)
         return 1
     if (n % 10 == 0)
         modifier++
@@ -181,9 +181,13 @@ fun sin(x: Double, eps: Double): Double {
     var counter = 1
     var sin = 0.0
     var enchX = x
+    var modifier = -1
 
-    while (enchX > 2 * PI)
-        enchX -= 2 * PI
+    if (enchX < 0)
+        modifier = 1
+
+    while (abs(enchX) > 2 * PI)
+        enchX += 2 * PI * modifier
 
     while (pow(enchX, counter.toDouble()) / factorial(counter) > eps) {
         sin += pow(-1.0, (2 - counter/2 % 2).toDouble()) * pow(enchX, counter.toDouble()) / factorial(counter)
@@ -204,9 +208,13 @@ fun cos(x: Double, eps: Double): Double {
     var counter = 0
     var cos = 0.0
     var enchX = x
+    var modifier = -1
 
-    while (enchX > 2 * PI)
-        enchX -= 2 * PI
+    if (enchX < 0)
+        modifier = 1
+
+    while (abs(enchX) > 2 * PI)
+        enchX += 2 * PI * modifier
 
     while (pow(enchX, counter.toDouble()) / factorial(counter) > eps) {
         cos += pow(-1.0, (2 - counter / 2 % 2).toDouble()) * pow(enchX, counter.toDouble()) / factorial(counter)
@@ -224,23 +232,16 @@ fun cos(x: Double, eps: Double): Double {
  */
 fun revert(n: Int): Int {
     var num = n
-    var finum = 0
-    var exp = 0
-
-    run {
-        var num = n
-        while (num != 0) {
-            num /= 10
-            exp++
-        }
-    }
+    var finum: Long
+    var exp = digitNumber(n)
+    finum = 0
 
     while (exp != 0) {
-        finum += (num % 10) * pow(10.0, exp--.toDouble()).toInt()
+        finum += (num % 10) * pow(10.0, exp--.toDouble()).toLong()
         num /= 10
     }
 
-    return finum / 10
+    return (finum / 10).toInt()
 }
 
 /**
