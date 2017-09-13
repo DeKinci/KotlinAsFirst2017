@@ -375,7 +375,7 @@ fun russian(n: Int): String {
         out.append(
                 triadName(secondTriad, "female") +
                 when {
-                    secondTriad in 5 .. 20 || secondTriad % 10 >= 5 || secondTriad % 10 == 0 -> "тысяч"
+                    secondTriad % 100 in 5 .. 20 || secondTriad % 10 >= 5 || secondTriad % 10 == 0 -> "тысяч"
                     secondTriad % 10 == 1 -> "тысяча"
                     else -> "тысячи"
                 } + " "
