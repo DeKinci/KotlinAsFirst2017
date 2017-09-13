@@ -190,13 +190,12 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
 fun sin(x: Double, eps: Double): Double {
     var counter = 1
     var enhX = x
-    var modifier = -1
 
-    if (enhX < 0)
-        modifier = 1
+    while (enhX > 2 * PI)
+        enhX -= 2 * PI
+    while (enhX < 0)
+        enhX += 2 * PI
 
-    while (abs(enhX) > 2 * PI)
-        enhX += 2 * PI * modifier
 
     var delta = enhX
     var sin = enhX
@@ -220,13 +219,11 @@ fun sin(x: Double, eps: Double): Double {
 fun cos(x: Double, eps: Double): Double {
     var counter = 0
     var enhX = x
-    var modifier = -1
 
-    if (enhX < 0)
-        modifier = 1
-
-    while (abs(enhX) > 2 * PI)
-        enhX += 2 * PI * modifier
+    while (enhX > 2 * PI)
+        enhX -= 2 * PI
+    while (enhX < 0)
+        enhX += 2 * PI
 
     var delta = 1.0
     var cos = 1.0
@@ -289,17 +286,15 @@ fun hasDifferentDigits(n: Int): Boolean {
 /**
  * Служебная
  *
- * Возвращает значение цифры под индексом m (слева) числа n
+ * Возвращает значение цифры под индексом m (слева) числа n если индекс превосходит, то последнее число
  */
 
 fun digOfNum(n: Int, m: Int): Int {
-    var counter = 0
-    var num = revert(n)
+    val dividerFormer = digitNumber(n) - m - 1
+    var num = n
 
-    while (counter != m) {
+    for (i in 1 .. dividerFormer)
         num /= 10
-        counter++
-    }
 
     return num % 10
 }
