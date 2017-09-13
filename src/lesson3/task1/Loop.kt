@@ -2,9 +2,6 @@
 package lesson3.task1
 
 import java.lang.Math.*
-import java.util.Stack
-import jdk.nashorn.tools.ShellFunctions.input
-import java.lang.StringBuilder
 
 
 /**
@@ -67,13 +64,18 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Например, число 1 содержит 1 цифру, 456 -- 3 цифры, 65536 -- 5 цифр.
  */
 fun digitNumber(n: Int): Int {
-    var modifier = 0
-    if (n == 0 || n == 1)
+    if (n == 0)
         return 1
-    if (n % 10 == 0)
-        modifier++
 
-    return ceil(log10(abs(n).toDouble())).toInt() + modifier
+    var counter = 0
+    var num = n
+
+    while (num != 0) {
+        counter++
+        num /= 10
+    }
+
+    return counter
 }
 
 /**
@@ -87,7 +89,7 @@ fun fib(n: Int): Int {
     var fib2 = 1
 
     for (i in 3 .. n) {
-        var tmp = fib2
+        val tmp = fib2
         fib2 += fib1
         fib1 = tmp
     }
@@ -95,13 +97,23 @@ fun fib(n: Int): Int {
     return fib2
 }
 
-//Not effective, exp difficulty
-/*fun fib(n: Int): Int {
-    if (n > 2)
-        return fib(n - 1) + fib(n - 2)
-    else
-        return 1
-}*/
+/**
+ * Служебная
+ *
+ * Нахождение НОДа по алгоритму Евклида
+ */
+fun gcd(m: Int, n: Int): Int {
+    var a = m
+    var b = n
+
+    while (a != 0 && b != 0)
+        if (a > b)
+            a %= b
+        else
+            b %= a
+
+    return a + b
+}
 
 /**
  * Простая
@@ -109,12 +121,9 @@ fun fib(n: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int {  //very slow, but im lazy
-    for (i in max(m, n) .. m * n)
-        if (i % m == 0 && i % n == 0)
-            return i
-    return m * n
-}
+
+fun lcm(m: Int, n: Int): Int =
+        m * n / gcd(m, n)
 
 /**
  * Простая
@@ -122,9 +131,12 @@ fun lcm(m: Int, n: Int): Int {  //very slow, but im lazy
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    for (i in 2 .. n / 2)
+    val threshold = round(sqrt(n.toDouble())).toInt()
+
+    for (i in 2 .. threshold)
         if (n % i == 0)
             return i
+
     return n
 }
 
@@ -134,9 +146,12 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int): Int {
-    for (i in n / 2 downTo 1)
-        if (n % i == 0)
-            return i
+    val threshold = round(sqrt(n.toDouble())).toInt()
+
+    for (i in 2 .. threshold)
+        if (n % (n / i) == 0)
+            return n / i
+
     return 1
 }
 
@@ -147,14 +162,8 @@ fun maxDivisor(n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    var min = min(m, n)
-
-    var maxNOD = 1
-    for (i in 2..min)
-        if (m % i == 0 && n % i == 0 && i > maxNOD) maxNOD = i
-    return maxNOD == 1
-}
+fun isCoPrime(m: Int, n: Int): Boolean =
+        gcd(m, n) == 1
 
 /**
  * Простая
@@ -165,8 +174,9 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
     for(i in m .. n)
-        if (sqrt(i.toDouble()) == ceil(sqrt(i.toDouble())))
+        if (abs(sqrt(i.toDouble()) - ceil(sqrt(i.toDouble()))) < 1e-6) //sqrt(Int.MAX_VALUE) - sqrt(Int.MAX_VALUE - 1) ~ 1e-5
             return true
+
     return false
 }
 
@@ -179,18 +189,21 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
  */
 fun sin(x: Double, eps: Double): Double {
     var counter = 1
-    var sin = 0.0
-    var enchX = x
+    var enhX = x
     var modifier = -1
 
-    if (enchX < 0)
+    if (enhX < 0)
         modifier = 1
 
-    while (abs(enchX) > 2 * PI)
-        enchX += 2 * PI * modifier
+    while (abs(enhX) > 2 * PI)
+        enhX += 2 * PI * modifier
 
-    while (pow(enchX, counter.toDouble()) / factorial(counter) > eps) {
-        sin += pow(-1.0, (2 - counter/2 % 2).toDouble()) * pow(enchX, counter.toDouble()) / factorial(counter)
+    var delta = enhX
+    var sin = enhX
+
+    while(delta > eps) {
+        delta *= enhX * enhX / (counter * counter + 3 * counter + 2)
+        sin += delta * if(counter / 2 % 2 == 0) -1 else 1
         counter += 2
     }
 
@@ -206,18 +219,21 @@ fun sin(x: Double, eps: Double): Double {
  */
 fun cos(x: Double, eps: Double): Double {
     var counter = 0
-    var cos = 0.0
-    var enchX = x
+    var enhX = x
     var modifier = -1
 
-    if (enchX < 0)
+    if (enhX < 0)
         modifier = 1
 
-    while (abs(enchX) > 2 * PI)
-        enchX += 2 * PI * modifier
+    while (abs(enhX) > 2 * PI)
+        enhX += 2 * PI * modifier
 
-    while (pow(enchX, counter.toDouble()) / factorial(counter) > eps) {
-        cos += pow(-1.0, (2 - counter / 2 % 2).toDouble()) * pow(enchX, counter.toDouble()) / factorial(counter)
+    var delta = 1.0
+    var cos = 1.0
+
+    while(delta > eps) {
+        delta *= enhX * enhX / (counter * counter + 3 * counter + 2)
+        cos += delta * if(counter / 2 % 2 == 0) -1 else 1
         counter += 2
     }
 
@@ -231,17 +247,15 @@ fun cos(x: Double, eps: Double): Double {
  * Не использовать строки при решении задачи.
  */
 fun revert(n: Int): Int {
+    var result = 0
     var num = n
-    var finum: Long
-    var exp = digitNumber(n)
-    finum = 0
 
-    while (exp != 0) {
-        finum += (num % 10) * pow(10.0, exp--.toDouble()).toLong()
+    while (num > 0) {
+        result = result * 10 + num % 10
         num /= 10
     }
 
-    return (finum / 10).toInt()
+    return result
 }
 
 /**
@@ -251,7 +265,8 @@ fun revert(n: Int): Int {
  * первая цифра равна последней, вторая -- предпоследней и так далее.
  * 15751 -- палиндром, 3653 -- нет.
  */
-fun isPalindrome(n: Int): Boolean = n == revert(n)
+fun isPalindrome(n: Int): Boolean =
+        n == revert(n)
 
 /**
  * Средняя
@@ -261,7 +276,7 @@ fun isPalindrome(n: Int): Boolean = n == revert(n)
  */
 fun hasDifferentDigits(n: Int): Boolean {
     var num = n
-    var digit = n % 10
+    val digit = n % 10
 
     while (num != 0) {
         if (num % 10 != digit)
@@ -272,6 +287,24 @@ fun hasDifferentDigits(n: Int): Boolean {
 }
 
 /**
+ * Служебная
+ *
+ * Возвращает значение цифры под индексом m (слева) числа n
+ */
+
+fun digOfNum(n: Int, m: Int): Int {
+    var counter = 0
+    var num = revert(n)
+
+    while (counter != m) {
+        num /= 10
+        counter++
+    }
+
+    return num % 10
+}
+
+/**
  * Сложная
  *
  * Найти n-ю цифру последовательности из квадратов целых чисел:
@@ -279,12 +312,20 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Например, 2-я цифра равна 4, 7-я 5, 12-я 6.
  */
 fun squareSequenceDigit(n: Int): Int {
-    var str = StringBuilder("")
-    for (i in 1 .. n) {
-        str.append((i * i).toString())
+    var counter = 0
+    var num = n - 1
+
+    while (true) {
+        counter++
+
+        val sqLen = digitNumber(counter * counter)
+        if (num - sqLen < 0)
+            break
+        else
+            num -= sqLen
     }
 
-    return str[n - 1].toString().toInt()
+    return digOfNum(counter * counter, num)
 }
 
 /**
@@ -295,11 +336,18 @@ fun squareSequenceDigit(n: Int): Int {
  * Например, 2-я цифра равна 1, 9-я 2, 14-я 5.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var str = StringBuilder("")
+    var counter = 0
+    var num = n - 1
 
-    for (i in 1 .. n) {
-        str.append(fib(i))
+    while (true) {
+        counter++
+
+        val sqLen = digitNumber(fib(counter))
+        if (num - sqLen < 0)
+            break
+        else
+            num -= sqLen
     }
 
-    return str[n - 1].toString().toInt()
+    return digOfNum(fib(counter), num)
 }
