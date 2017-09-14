@@ -76,7 +76,7 @@ fun dateStrToDigit(str: String): String {
         val day = date[0].toInt()
         val mon = tes.indexOf(date[1]) + 1
         val year = date[2].toInt()
-        if (day in 1 .. 31 && mon in 1 .. 12 && date[2] != null && date.size == 3)
+        if (day in 1 .. 31 && mon in 1 .. 12 && date.size == 3)
             return format("%02d.%02d.%04d", day, mon, year)
     } catch (e: Exception) {
         return ""
@@ -369,7 +369,7 @@ fun fromRoman(roman: String): Int {
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> { //Hello, good old friend brainf*ck. I missed you
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> { //I have a very bad bug with the limit here, please HELPME
     val enhCommands = commands.replace(" ", "")
 
     //Commands to use instead of chars
@@ -421,7 +421,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> { //
                 if (data[dataPointer] == 0) {
                     var i = 1
                     while (i > 0) {
-                        var ch = enhCommands[++charPointer]
+                        val ch = enhCommands[++charPointer]
                         if (ch == bgn)
                             i++
                         if (ch == end)
@@ -432,7 +432,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> { //
             end -> {
                 var i = 1
                 while (i > 0) {
-                    var ch = enhCommands[--charPointer]
+                    val ch = enhCommands[--charPointer]
                     if (ch == bgn)
                         i--
                     if (ch == end)
