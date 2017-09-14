@@ -232,7 +232,7 @@ fun factorize(n: Int): List<Int> {
     if (num != 1)
         factors += num
 
-    return factors.sorted()
+    return factors
 }
 
 /**
@@ -272,10 +272,7 @@ fun convert(n: Int, base: Int): List<Int> {
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
 fun convertToString(n: Int, base: Int): String {
-    val chars = listOf<String>(
-            "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-            "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
-            "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z")
+    val chars = ('0' .. '9') + ('a' .. 'z')
 
     val str = StringBuilder("")
     val lst = convert(n, base)
@@ -316,10 +313,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * Например: str = "13c", base = 14 -> 250
  */
 fun decimalFromString(str: String, base: Int): Int {
-    val chars = listOf<Char>(
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z')
+    val chars = ('0' .. '9') + ('a' .. 'z')
 
     var list = listOf<Int>()
     for (i in 0 until str.length)
@@ -347,12 +341,12 @@ fun roman(n: Int): String {
     var index = 0
 
     while (index < arabs.size) {
-        val BitDepth = num / arabs[index]
+        val bitDepth = num / arabs[index]
 
-        for (i in 0 until BitDepth)
+        for (i in 0 until bitDepth)
             strNum.append(romans[index])
 
-        num -= BitDepth * arabs[index]
+        num -= bitDepth * arabs[index]
         index++
     }
 
@@ -371,10 +365,11 @@ fun russian(n: Int): String {
     val firstTriad = n % 1000
     val secondTriad = n / 1000
 
+
     val out = StringBuilder("")
     if (secondTriad > 0)
         out.append(
-                triadName(secondTriad, "female") +
+                triadName(secondTriad, Gender.Female) +
                         when {
                             secondTriad % 100 in 5 .. 20 || secondTriad % 10 >= 5 || secondTriad % 10 == 0 -> "тысяч"
                             secondTriad % 10 == 1 -> "тысяча"
@@ -382,10 +377,14 @@ fun russian(n: Int): String {
                         } + " "
         )
 
-    return out.append(triadName(firstTriad, "male")).toString().trim()
+    return out.append(triadName(firstTriad, Gender.Male)).toString().trim()
 }
 
-fun triadName(triad: Int, gender: String): String {
+enum class Gender {
+    Male, Female
+}
+
+fun triadName(triad: Int, gender: Gender): String {
     val str1 = arrayOf(
             arrayOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять"),
             arrayOf("", "одна", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять"))
@@ -396,15 +395,16 @@ fun triadName(triad: Int, gender: String): String {
     val str100 = arrayOf("", "сто", "двести", "триста", "четыреста", "пятьсот",
             "шестьсот", "семьсот", "восемьсот", "девятьсот")
 
+
     val digits = triad % 10
     val decs = triad / 10 % 10
     val hundreds = triad / 100
-    val genderInteger = when {
-        gender == "male" -> 0
+    val genderInteger = when (gender) {
+        Gender.Male -> 0
         else -> 1
     }
 
-    if (triad % 100 in 11 .. 20) {  //Fun: Teens don't care about gender
+    if (triad % 100 in 11 .. 20) {
         val teens = triad % 100 - 10
         return str100[hundreds] + (if (hundreds > 0) " " else "") + str11[teens] + (if (teens > 0) " " else "")
     }
