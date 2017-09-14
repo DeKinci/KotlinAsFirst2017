@@ -1,4 +1,5 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson4.task1
 
 import lesson1.task1.discriminant
@@ -86,7 +87,7 @@ fun squares(list: List<Int>) = list.map { it * it }
  */
 fun isPalindrome(str: String): Boolean {
     val lowerCase = str.toLowerCase().filter { it != ' ' }
-    for (i in 0..lowerCase.length / 2) {
+    for (i in 0 .. lowerCase.length / 2) {
         if (lowerCase[i] != lowerCase[lowerCase.length - i - 1]) return false
     }
     return true
@@ -374,14 +375,14 @@ fun russian(n: Int): String {
     if (secondTriad > 0)
         out.append(
                 triadName(secondTriad, "female") +
-                when {
-                    secondTriad % 100 in 5 .. 20 || secondTriad % 10 >= 5 || secondTriad % 10 == 0 -> "тысяч"
-                    secondTriad % 10 == 1 -> "тысяча"
-                    else -> "тысячи"
-                } + " "
+                        when {
+                            secondTriad % 100 in 5 .. 20 || secondTriad % 10 >= 5 || secondTriad % 10 == 0 -> "тысяч"
+                            secondTriad % 10 == 1 -> "тысяча"
+                            else -> "тысячи"
+                        } + " "
         )
 
-    return  out.append(triadName(firstTriad, "male")).toString().trim()
+    return out.append(triadName(firstTriad, "male")).toString().trim()
 }
 
 fun triadName(triad: Int, gender: String): String {
@@ -405,7 +406,7 @@ fun triadName(triad: Int, gender: String): String {
 
     if (triad % 100 in 11 .. 20) {  //Fun: Teens don't care about gender
         val teens = triad % 100 - 10
-        return str100[hundreds] + (if(hundreds > 0) " " else "") + str11[teens] + (if(teens > 0) " " else "")
+        return str100[hundreds] + (if (hundreds > 0) " " else "") + str11[teens] + (if (teens > 0) " " else "")
     }
 
     return str100[hundreds] + (if (hundreds > 0) " " else "") +
