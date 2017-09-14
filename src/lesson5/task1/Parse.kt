@@ -77,7 +77,7 @@ fun dateStrToDigit(str: String): String {
         val mon = tes.indexOf(date[1]) + 1
         val year = date[2].toInt()
         if (day in 1 .. 31 && mon in 1 .. 12 && date.size == 3)
-            return format("%02d.%02d.%04d", day, mon, year)
+            return format("%02d.%02d.%d", day, mon, year)
     } catch (e: Exception) {
         return ""
     }
@@ -330,7 +330,7 @@ fun fromRoman(roman: String): Int {
                     return arabNum
             } else break
 
-    return -1
+    return 0
 }
 
 /**
