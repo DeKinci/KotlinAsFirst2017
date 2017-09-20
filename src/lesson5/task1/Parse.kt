@@ -317,6 +317,9 @@ fun fromRoman(roman: String): Int {
             "X", "IX", "V", "IV", "I")
     val arabs = listOf<Int>(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
 
+    if (roman.isEmpty())
+        return -1
+
     val romeNum = StringBuilder(roman)
     var arabNum = 0
 
@@ -330,7 +333,7 @@ fun fromRoman(roman: String): Int {
                     return arabNum
             } else break
 
-    return 0
+    return -1
 }
 
 /**
