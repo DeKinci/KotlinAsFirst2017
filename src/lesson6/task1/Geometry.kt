@@ -79,7 +79,7 @@ data class Circle(val center: Point, val radius: Double) {
      *
      * Вернуть true, если и только если окружность содержит данную точку НА себе или ВНУТРИ себя
      */
-    fun contains(p: Point): Boolean = TODO()
+    fun contains(p: Point): Boolean = p.distance(this.center) <=  this.radius
 }
 
 /**
@@ -129,6 +129,18 @@ class Line private constructor(val b: Double, val angle: Double) {
      * Для этого необходимо составить и решить систему из двух уравнений (каждое для своей прямой)
      */
     fun crossPoint(other: Line): Point = TODO()
+//    {
+//        val k1 = Math.tan(this.angle);
+//        val k2 = Math.tan(other.angle);
+//
+//        val c1 = this.b / Math.cos(this.angle)
+//        val c2 = other.b / Math.cos(other.angle)
+//
+//        val x = (c2 - c1) / (k1 - k2)
+//        val y = k1 * x + c1
+//
+//        return Point(x, y)
+//    }
 
     override fun equals(other: Any?) = other is Line && angle == other.angle && b == other.b
 

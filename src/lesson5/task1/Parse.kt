@@ -68,7 +68,7 @@ fun main(args: Array<String>) {
  * При неверном формате входной строки вернуть пустую строку
  */
 fun dateStrToDigit(str: String): String {
-    val tes = listOf<String>("января", "февраля", "марта", "апреля", "мая",
+    val tes = listOf("января", "февраля", "марта", "апреля", "мая",
             "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
     val date = str.split(" ")
 
@@ -101,7 +101,7 @@ fun dateDigitToStr(digital: String): String {
         val mon = date[1].toInt()
         val year = date[2].toInt()
         if (day in 1 .. 31 && mon in 1 .. 12 && date.size == 3)
-            return day.toString() + " " + tes[mon - 1] + " " + year
+            return "$day ${tes[mon-1]} $year"
     } catch (e: Exception) {
         return ""
     }
@@ -125,7 +125,7 @@ fun flattenPhoneNumber(phone: String): String {
         return ""
 
     val hasPlus = phone.first() == '+'
-    val phoneBuilder = if (hasPlus) phone.replace("+", "") else phone
+    val phoneBuilder = if (hasPlus) phone.replaceFirst("+", "") else phone
 
     val enhPhone = phoneBuilder.replace("(", "").replace(")", "")
             .replace("-", "").replace(" ", "")
@@ -196,8 +196,10 @@ fun bestHighJump(jumps: String): Int {
 
         for (ch in jumpsArr[i + 1])
             if (ch == '+' || ch == '%' || ch == '-') {
-                if (ch == '+' && jumpsArr[i].toInt() > maxH)
-                    maxH = jumpsArr[i].toInt()
+                val jump = jumpsArr[i].toInt()
+
+                if (ch == '+' && jump > maxH)
+                    maxH = jump
             } else return -1
     }
 
@@ -228,9 +230,9 @@ fun plusMinus(expression: String): Int {
 
     for (i in 2 until enhExpression.size step 2) {
         try {
-            expressionResult += when {
-                enhExpression[i - 1] == "+" -> enhExpression[i].toInt()
-                enhExpression[i - 1] == "-" -> (-enhExpression[i].toInt())
+            expressionResult += when (enhExpression[i - 1]) {
+                "+" -> enhExpression[i].toInt()
+                "-" -> (-enhExpression[i].toInt())
                 else -> throw IllegalArgumentException()
             }
         } catch (e: Exception) {
@@ -314,20 +316,17 @@ fun mostExpensive(description: String): String {
  */
 fun fromRoman(roman: String): Int {
     val romans = listOf<String>("M", "CM", "D", "CD", "C", "XC", "L", "XL",
-            "X", "IX", "V", "IV", "I")
+            "X", "IX", "V", "IV", "I").withIndex()
     val arabs = listOf<Int>(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
-
-    if (roman.isEmpty())
-        return -1
 
     val romeNum = StringBuilder(roman)
     var arabNum = 0
 
     for (rome in romans)
         while (romeNum.isNotEmpty())
-            if (romeNum.length >= rome.length && rome == romeNum.substring(0, rome.length)) {
-                arabNum += arabs[romans.indexOf(rome)]
-                romeNum.delete(0, rome.length)
+            if (romeNum.indexOf(rome.value) == 0) {
+                arabNum += arabs[rome.index]
+                romeNum.delete(0, rome.value.length)
 
                 if (romeNum.isEmpty())
                     return arabNum
@@ -392,7 +391,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> { //
     for (ch in enhCommands)
         bktCounter += when {
             ch == bgn -> 1
-            ch == end -> -1
+            ch == end && bktCounter > 0 -> -1
             else -> 0
         }
     if (bktCounter != 0)
@@ -407,14 +406,12 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> { //
     while (commandsExecuted < limit && charPointer < enhCommands.length) {
         when (enhCommands[charPointer]) {
             mvR -> {
-                if (dataPointer + 1 > cells)
+                if (++dataPointer > cells)
                     throw IllegalStateException()
-                dataPointer++
             }
             mvL -> {
-                if (dataPointer - 1 < 0)
+                if (--dataPointer < 0)
                     throw IllegalStateException()
-                dataPointer--
             }
 
             inc -> data[dataPointer]++
