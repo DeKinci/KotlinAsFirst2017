@@ -1,4 +1,5 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson3.task1
 
 import java.lang.Math.*
@@ -11,7 +12,7 @@ import java.lang.Math.*
  */
 fun factorial(n: Int): Double {
     var result = 1.0
-    for (i in 1..n) {
+    for (i in 1 .. n) {
         result = result * i // Please do not fix in master
     }
     return result
@@ -24,7 +25,7 @@ fun factorial(n: Int): Double {
  */
 fun isPrime(n: Int): Boolean {
     if (n < 2) return false
-    for (m in 2..Math.sqrt(n.toDouble()).toInt()) {
+    for (m in 2 .. Math.sqrt(n.toDouble()).toInt()) {
         if (n % m == 0) return false
     }
     return true
@@ -37,7 +38,7 @@ fun isPrime(n: Int): Boolean {
  */
 fun isPerfect(n: Int): Boolean {
     var sum = 1
-    for (m in 2..n/2) {
+    for (m in 2 .. n / 2) {
         if (n % m > 0) continue
         sum += m
         if (sum > n) break
@@ -103,14 +104,17 @@ fun fib(n: Int): Int {
  * Нахождение НОДа по алгоритму Евклида
  */
 fun gcd(m: Int, n: Int): Int {
-    var a = m
-    var b = n
+    var a = if (m > n) m else n
+    var b = if (m < n) m else n
 
-    while (a != 0 && b != 0)
-        if (a > b)
-            a %= b
-        else
-            b %= a
+
+    while (a != 0 && b != 0) {
+        a %= b
+
+        a += b
+        b = a - b
+        a -= b
+    }
 
     return a + b
 }
@@ -136,7 +140,6 @@ fun minDivisor(n: Int): Int {
     for (i in 2 .. threshold)
         if (n % i == 0)
             return i
-
     return n
 }
 
@@ -173,7 +176,7 @@ fun isCoPrime(m: Int, n: Int): Boolean =
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    for(i in m .. n)
+    for (i in m .. n)
         if (abs(sqrt(i.toDouble()) - ceil(sqrt(i.toDouble()))) < 1e-6) //sqrt(Int.MAX_VALUE) - sqrt(Int.MAX_VALUE - 1) ~ 1e-5
             return true
 
@@ -200,9 +203,9 @@ fun sin(x: Double, eps: Double): Double {
     var delta = enhX
     var sin = enhX
 
-    while(delta > eps) {
+    while (delta > eps) {
         delta *= enhX * enhX / (counter * counter + 3 * counter + 2)
-        sin += delta * if(counter / 2 % 2 == 0) -1 else 1
+        sin += delta * if (counter / 2 % 2 == 0) -1 else 1
         counter += 2
     }
 
@@ -228,9 +231,9 @@ fun cos(x: Double, eps: Double): Double {
     var delta = 1.0
     var cos = 1.0
 
-    while(delta > eps) {
+    while (delta > eps) {
         delta *= enhX * enhX / (counter * counter + 3 * counter + 2)
-        cos += delta * if(counter / 2 % 2 == 0) -1 else 1
+        cos += delta * if (counter / 2 % 2 == 0) -1 else 1
         counter += 2
     }
 

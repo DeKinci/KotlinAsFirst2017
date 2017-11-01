@@ -3,6 +3,7 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
+import java.lang.Math.abs
 import java.lang.Math.sqrt
 
 /**
@@ -361,30 +362,31 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String {
-    val firstTriad = n % 1000
-    val secondTriad = n / 1000
+fun russian(n: Int): String {//Now it works with any integer except minimal!
+    var num = abs(n)
+    val triads = arrayListOf<Int>()
 
+    while (num != 0) {
+        triads.add(num % 1000)
+        num /= 1000
+    }
+    val finalTriad = triads.withIndex().reversed()
 
-    val out = StringBuilder("")
-    if (secondTriad > 0)
-        out.append(
-                triadName(secondTriad, Gender.Female) +
-                        when {
-                            secondTriad % 100 in 5 .. 20 || secondTriad % 10 >= 5 || secondTriad % 10 == 0 -> "тысяч"
-                            secondTriad % 10 == 1 -> "тысяча"
-                            else -> "тысячи"
-                        } + " "
-        )
+    val russianBuilder = arrayListOf<String>()
+    if (n == 0)
+        russianBuilder.add("ноль")
+    if (n < 0)
+        russianBuilder.add("минус")
 
-    return out.append(triadName(firstTriad, Gender.Male)).toString().trim()
+    for ((index, value) in finalTriad)
+        russianBuilder.addAll(buildTriadWithExponent(value, index))
+
+    while (russianBuilder.remove(""));
+
+    return russianBuilder.joinToString(" ").trim()
 }
 
-enum class Gender {
-    Male, Female
-}
-
-fun triadName(triad: Int, gender: Gender): String {
+fun buildTriadWithExponent(triad: Int, triadIndex: Int): ArrayList<String> {
     val str1 = arrayOf(
             arrayOf("", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять"),
             arrayOf("", "одна", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять"))
@@ -399,17 +401,39 @@ fun triadName(triad: Int, gender: Gender): String {
     val digits = triad % 10
     val decs = triad / 10 % 10
     val hundreds = triad / 100
-    val genderInteger = when (gender) {
-        Gender.Male -> 0
-        else -> 1
+    val genderIndex = when (triadIndex) {
+    // Only thousands are female, also thousands go the 2nd triad (1st counting from 0).
+    // All the others are male: nothing, million, billion
+        1 -> 1
+        else -> 0
     }
+
+    val result = arrayListOf<String>(str100[hundreds])
 
     if (triad % 100 in 11 .. 20) {
         val teens = triad % 100 - 10
-        return str100[hundreds] + (if (hundreds > 0) " " else "") + str11[teens] + (if (teens > 0) " " else "")
+        result.add(str11[teens])
+    } else {
+        result.add(str10[decs])
+        result.add(str1[genderIndex][digits])
     }
 
-    return str100[hundreds] + (if (hundreds > 0) " " else "") +
-            str10[decs] + (if (decs > 0) " " else "") +
-            str1[genderInteger][digits] + (if (digits > 0) " " else "")
+    result.add(formDeclinedExponent(triad, triadIndex))
+
+    return result
+}
+
+fun formDeclinedExponent(triad: Int, triadIndex: Int): String {
+    val exponents = arrayOf(
+            arrayOf("", "", ""),
+            arrayOf("тысяч", "тысяча", "тысячи"),
+            arrayOf("миллионов", "миллион", "миллиона"),
+            arrayOf("миллиардов", "миллиард", "миллиарда")
+    )
+
+    return when {
+        triad % 100 in 5 .. 20 || triad % 10 >= 5 || triad % 10 == 0 -> exponents[triadIndex][0]
+        triad % 10 == 1 -> exponents[triadIndex][1]
+        else -> exponents[triadIndex][2]
+    }
 }

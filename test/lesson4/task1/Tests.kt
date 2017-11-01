@@ -226,5 +226,9 @@ class Tests {
         assertEquals("двести тысяч два", russian(200002))
         assertEquals("девятьсот тысяч", russian(900000))
         assertEquals("двенадцать", russian(12))
+        assertEquals("три миллиона двести девяносто пять тысяч сто тридцать пять", russian(3295135))
+        assertEquals("два миллиарда сто сорок семь миллионов четыреста восемьдесят три тысячи шестьсот сорок семь", russian(Int.MAX_VALUE))
+        assertEquals("ноль", russian(0))
+        assertEquals("минус два миллиарда сто сорок семь миллионов четыреста восемьдесят три тысячи шестьсот сорок семь", russian(Int.MIN_VALUE + 1))
     }
 }

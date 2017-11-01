@@ -101,7 +101,7 @@ fun dateDigitToStr(digital: String): String {
         val mon = date[1].toInt()
         val year = date[2].toInt()
         if (day in 1 .. 31 && mon in 1 .. 12 && date.size == 3)
-            return "$day ${tes[mon-1]} $year"
+            return "$day ${tes[mon - 1]} $year"
     } catch (e: Exception) {
         return ""
     }
@@ -121,17 +121,14 @@ fun dateDigitToStr(digital: String): String {
  * При неверном формате вернуть пустую строку
  */
 fun flattenPhoneNumber(phone: String): String {
-    if (phone.length == 0)
+    if (phone.isEmpty())
         return ""
 
     val hasPlus = phone.first() == '+'
-    val phoneBuilder = if (hasPlus) phone.replaceFirst("+", "") else phone
+    val enhPhone = phone.replace(Regex("[-+() ]"), "")
 
-    val enhPhone = phoneBuilder.replace("(", "").replace(")", "")
-            .replace("-", "").replace(" ", "")
-
-    for (ch in enhPhone)
-        if (!Character.isDigit(ch)) return ""
+    if (!enhPhone.matches(Regex("[0-9]+")))
+        return ""
 
     return (if (hasPlus) "+" else "") + enhPhone
 
@@ -372,7 +369,6 @@ fun fromRoman(roman: String): Int {
  *
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> { //I have a very bad bug with the limit here, please HELPME
-    val enhCommands = commands.replace(" ", "")
 
     //Commands to use instead of chars
     val mvR = '>'
@@ -381,17 +377,17 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> { //
     val dec = '-'
     val bgn = '['
     val end = ']'
+    val spc = ' '
 
     //Syntax check
-    for (ch in enhCommands)
-        if (ch != mvR && ch != mvL && ch != inc && ch != dec && ch != bgn && ch != end)
-            throw IllegalArgumentException()
+    if (!commands.matches(Regex("[-+><\\[\\] ]*")))
+        throw IllegalArgumentException()
 
     var bktCounter = 0
-    for (ch in enhCommands)
+    for (ch in commands)
         bktCounter += when {
-            ch == bgn -> 1
-            ch == end && bktCounter > 0 -> -1
+            ch == bgn && bktCounter >= 0 -> 1
+            ch == end -> -1
             else -> 0
         }
     if (bktCounter != 0)
@@ -403,8 +399,8 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> { //
     var charPointer = 0
     var commandsExecuted = 0
 
-    while (commandsExecuted < limit && charPointer < enhCommands.length) {
-        when (enhCommands[charPointer]) {
+    while (commandsExecuted < limit && charPointer < commands.length) {
+        when (commands[charPointer]) {
             mvR -> {
                 if (++dataPointer > cells)
                     throw IllegalStateException()
@@ -421,7 +417,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> { //
                 if (data[dataPointer] == 0) {
                     var i = 1
                     while (i > 0) {
-                        val ch = enhCommands[++charPointer]
+                        val ch = commands[++charPointer]
                         if (ch == bgn)
                             i++
                         if (ch == end)
@@ -430,16 +426,19 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> { //
                 }
             }
             end -> {
-                var i = 1
-                while (i > 0) {
-                    val ch = enhCommands[--charPointer]
-                    if (ch == bgn)
-                        i--
-                    if (ch == end)
-                        i++
+                if (data[dataPointer] != 0) {
+                    var i = 1
+                    while (i > 0) {
+                        val ch = commands[--charPointer]
+                        if (ch == bgn)
+                            i--
+                        if (ch == end)
+                            i++
+                    }
                 }
-                charPointer--
             }
+
+            spc -> {}
         }
         charPointer++
         commandsExecuted++

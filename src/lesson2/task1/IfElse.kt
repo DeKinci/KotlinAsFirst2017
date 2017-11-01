@@ -117,12 +117,14 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     val longestSide = max(max(a, b), c)
     val shortestSide = min(min(a, b), c)
     val middleSide = a + b + c - longestSide - shortestSide
+    val longestSideP2 = longestSide * longestSide
+    val otherSidesSumP2 = middleSide * middleSide + shortestSide * shortestSide
 
     return when {
         longestSide > middleSide + shortestSide -> -1
-        longestSide * longestSide > middleSide * middleSide + shortestSide * shortestSide -> 2
-        longestSide * longestSide < middleSide * middleSide + shortestSide * shortestSide -> 0
-        longestSide * longestSide == middleSide * middleSide + shortestSide * shortestSide -> 1
+        longestSideP2 > otherSidesSumP2 -> 2
+        longestSideP2 < otherSidesSumP2 -> 0
+        longestSideP2 == otherSidesSumP2 -> 1
         else -> -1
     }
 }
