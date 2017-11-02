@@ -317,15 +317,17 @@ fun fromRoman(roman: String): Int {
     val arabs = listOf<Int>(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
 
     val romeNum = StringBuilder(roman)
+    //Another one bites the string
+    var biter = 0
     var arabNum = 0
 
-    for (rome in romans)
+    for ((romeIndex, romeStr) in romans)
         while (romeNum.isNotEmpty())
-            if (romeNum.indexOf(rome.value) == 0) {
-                arabNum += arabs[rome.index]
-                romeNum.delete(0, rome.value.length)
+            if (romeNum.indexOf(romeStr, biter) == biter) {
+                arabNum += arabs[romeIndex]
+                biter += romeStr.length
 
-                if (romeNum.isEmpty())
+                if (biter == romeNum.length)
                     return arabNum
             } else break
 
@@ -368,7 +370,7 @@ fun fromRoman(roman: String): Int {
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> { //I have a very bad bug with the limit here, please HELPME
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
 
     //Commands to use instead of chars
     val mvR = '>'
@@ -401,14 +403,10 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> { //
 
     while (commandsExecuted < limit && charPointer < commands.length) {
         when (commands[charPointer]) {
-            mvR -> {
-                if (++dataPointer > cells)
-                    throw IllegalStateException()
-            }
-            mvL -> {
-                if (--dataPointer < 0)
-                    throw IllegalStateException()
-            }
+            mvR -> if (++dataPointer >= cells)
+                throw IllegalStateException()
+            mvL -> if (--dataPointer < 0)
+                throw IllegalStateException()
 
             inc -> data[dataPointer]++
             dec -> data[dataPointer]--
