@@ -1,4 +1,5 @@
 @file:Suppress("UNUSED_PARAMETER")
+
 package lesson6.task2
 
 /**
@@ -14,7 +15,7 @@ data class Square(val column: Int, val row: Int) {
      *
      * Возвращает true, если клетка находится в пределах доски
      */
-    fun inside(): Boolean = column in 1..8 && row in 1..8
+    fun inside(): Boolean = column in 1 .. 8 && row in 1 .. 8
 
     /**
      * Простая
@@ -38,7 +39,14 @@ data class Square(val column: Int, val row: Int) {
  * В нотации, колонки обозначаются латинскими буквами от a до h, а ряды -- цифрами от 1 до 8.
  * Если нотация некорректна, бросить IllegalArgumentException
  */
-fun square(notation: String): Square = TODO()
+fun square(notation: String): Square {
+    val letters = ('a' .. 'h').toList()
+
+    if (!notation.matches(Regex("[a-h][1-8]")))
+        throw IllegalArgumentException()
+
+    return Square(letters.indexOf(notation[0]) + 1, notation[1].toString().toInt())
+}
 
 /**
  * Простая
@@ -187,7 +195,49 @@ fun kingTrajectory(start: Square, end: Square): List<Square> = TODO()
  * Пример: knightMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
-fun knightMoveNumber(start: Square, end: Square): Int = TODO()
+fun knightMoveNumber(start: Square, end: Square): Int {
+    val map = createMap()
+
+    recursiveKnightMoves(start, map)
+
+    return map[end.row - 1][end.column - 1]
+}
+
+fun recursiveKnightMoves(
+        recent: Square,
+        map: Array<IntArray>,
+        counter: Int = 0
+) {
+    if (map[recent.row - 1][recent.column - 1] <= counter)
+        return
+
+    map[recent.row - 1][recent.column - 1] = counter
+
+    val nextHops = getPossibleHorseHops(recent)
+    for (hop in nextHops)
+        recursiveKnightMoves(hop, map, counter + 1)
+}
+
+fun getPossibleHorseHops(start: Square): List<Square> {
+    val horseDeltas = listOf(Pair(2, 1), Pair(1, 2), Pair(-1, 2), Pair(-2, 1),
+            Pair(-2, -1), Pair(-1, -2), Pair(1, -2), Pair(2, -1))
+
+    val result = ArrayList<Square>()
+    for ((dColumn, dRow) in horseDeltas) {
+        val possibleHop = Square(start.column + dColumn, start.row + dRow)
+        if (possibleHop.inside())
+            result.add(possibleHop)
+    }
+
+    return result.toList()
+}
+
+fun createMap(): Array<IntArray> {
+    val map = Array(8) { IntArray(8) }
+    for (row in map)
+        row.fill(Int.MAX_VALUE)
+    return map
+}
 
 /**
  * Очень сложная
@@ -209,4 +259,44 @@ fun knightMoveNumber(start: Square, end: Square): Int = TODO()
  *
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun knightTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun knightTrajectory(start: Square, end: Square): List<Square> {
+    val trajectory = ArrayList<Square>()
+    val map = createMap()
+
+    recursiveKnightMoves(start, map)
+    recursiveKnightTrajectoryFinder(end, map, trajectory)
+
+    return trajectory.reversed()
+}
+
+fun recursiveKnightTrajectoryFinder(
+        recentPosition: Square,
+        map: Array<IntArray>,
+        trajectory: ArrayList<Square>
+) {
+    trajectory.add(recentPosition)
+
+    if (map[recentPosition.row - 1][recentPosition.column - 1] == 0)
+        return
+
+    recursiveKnightTrajectoryFinder(
+            findBestHop(recentPosition, map),
+            map, trajectory)
+}
+
+fun findBestHop(recentPosition: Square, map: Array<IntArray>): Square {
+    var bestNextHop: Square? = null
+    var nextHopMetrics = Int.MAX_VALUE
+
+    val nextHops = getPossibleHorseHops(recentPosition)
+    for (hop in nextHops)
+        if (map[hop.row - 1][hop.column - 1] < nextHopMetrics) {
+            bestNextHop = hop
+            nextHopMetrics = map[hop.row - 1][hop.column - 1]
+        }
+
+    if (bestNextHop != null)
+        return bestNextHop
+    else
+        throw IllegalStateException()
+}
