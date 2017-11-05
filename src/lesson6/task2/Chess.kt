@@ -196,8 +196,10 @@ fun kingTrajectory(start: Square, end: Square): List<Square> = TODO()
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
 fun knightMoveNumber(start: Square, end: Square): Int {
-    val map = createMap()
+    if (!start.inside() || !end.inside())
+        throw IllegalArgumentException()
 
+    val map = createMap()
     recursiveKnightMoves(start, map)
 
     return map[end.row - 1][end.column - 1]
