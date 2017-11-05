@@ -275,23 +275,23 @@ fun mostExpensive(description: String): String {
         return ""
 
     val goods = description.split(";")
-    var theMostExpensiveStuff = ""
-    var theMostExpensiveStuffCost = 0.0
+    var mostExpensiveStuff = ""
+    var mostExpensiveStuffCost = - 1.0
 
     for (stuff in goods) {
         val pricedStuff = stuff.trim().split(" ")
 
         try {
-            if (theMostExpensiveStuffCost < pricedStuff[1].toDouble()) {
-                theMostExpensiveStuffCost = pricedStuff[1].toDouble()
-                theMostExpensiveStuff = pricedStuff[0]
+            if (mostExpensiveStuffCost < pricedStuff[1].toDouble()) {
+                mostExpensiveStuffCost = pricedStuff[1].toDouble()
+                mostExpensiveStuff = pricedStuff[0]
             }
         } catch (e: Exception) {
             return ""
         }
     }
 
-    return theMostExpensiveStuff
+    return mostExpensiveStuff
 }
 
 /**
