@@ -247,9 +247,10 @@ fun createMap(): Array<IntArray> {
     return map
 }
 
-fun checkCells(start: Square, end: Square) {
-    if (!start.inside() || !end.inside())
-        throw IllegalArgumentException()
+fun checkCells(vararg cells: Square) {
+    for (cell in cells)
+        if (!cell.inside())
+            throw IllegalArgumentException()
 }
 
 /**
