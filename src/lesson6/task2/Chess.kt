@@ -286,13 +286,13 @@ fun recursiveKnightTrajectoryFinder(
 
 fun findBestHop(recentPosition: Square, map: Array<IntArray>): Square {
     var bestNextHop: Square? = null
-    var nextHopMetrics = Int.MAX_VALUE
+    var bestHopMetrics = Int.MAX_VALUE
 
     val nextHops = getPossibleHorseHops(recentPosition)
     for (hop in nextHops)
-        if (map[hop.row - 1][hop.column - 1] < nextHopMetrics) {
+        if (map[hop.row - 1][hop.column - 1] < bestHopMetrics) {
             bestNextHop = hop
-            nextHopMetrics = map[hop.row - 1][hop.column - 1]
+            bestHopMetrics = map[hop.row - 1][hop.column - 1]
         }
 
     if (bestNextHop != null)
