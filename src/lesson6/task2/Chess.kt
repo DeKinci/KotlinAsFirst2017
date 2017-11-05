@@ -2,6 +2,10 @@
 
 package lesson6.task2
 
+import jdk.nashorn.tools.ShellFunctions.input
+import java.lang.Math.*
+
+
 /**
  * Клетка шахматной доски. Шахматная доска квадратная и имеет 8 х 8 клеток.
  * Поэтому, обе координаты клетки (горизонталь row, вертикаль column) могут находиться в пределах от 1 до 8.
@@ -154,7 +158,10 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> = TODO()
  * Пример: kingMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Король может последовательно пройти через клетки (4, 2) и (5, 2) к клетке (6, 3).
  */
-fun kingMoveNumber(start: Square, end: Square): Int = TODO()
+fun kingMoveNumber(start: Square, end: Square): Int {
+    checkCells(start, end)
+    return max(abs(start.row - end.row), abs(start.column - end.column))
+}
 
 /**
  * Сложная
@@ -196,8 +203,7 @@ fun kingTrajectory(start: Square, end: Square): List<Square> = TODO()
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
 fun knightMoveNumber(start: Square, end: Square): Int {
-    if (!start.inside() || !end.inside())
-        throw IllegalArgumentException()
+    checkCells(start, end)
 
     val map = createMap()
     recursiveKnightMoves(start, map)
@@ -239,6 +245,11 @@ fun createMap(): Array<IntArray> {
     for (row in map)
         row.fill(Int.MAX_VALUE)
     return map
+}
+
+fun checkCells(start: Square, end: Square) {
+    if (!start.inside() || !end.inside())
+        throw IllegalArgumentException()
 }
 
 /**
